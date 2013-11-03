@@ -23,6 +23,18 @@ shared_examples_for ImageSorcery do |new_instance_method|
     end
   end
 
+  describe '#env' do
+    it "prefixes command with environment variables" do
+      image.env = {
+        'MAGICK_TEMPORARY_PATH' => '/dev/ramdisk-01',
+        'MAGICK_MEMORY_LIMIT' => '250'
+      }
+      image.send(:command_env).should eq(
+        "MAGICK_TEMPORARY_PATH='/dev/ramdisk-01' MAGICK_MEMORY_LIMIT='250'")
+      image.send(:build_command, 'identify').should match(/MAGICK_TEMPORARY_PATH='\/dev\/ramdisk-01' MAGICK_MEMORY_LIMIT='250' identify/)
+    end
+  end
+
   describe "getting the dimensions of an image" do
     it "returns a hash of dimensions" do
       image.dimensions.should == {:x => 160, :y => 120}

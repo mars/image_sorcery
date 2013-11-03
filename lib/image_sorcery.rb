@@ -2,9 +2,11 @@ require 'gm_support'
 
 class ImageSorcery
   attr_reader :file
+  attr_accessor :env
 
   def initialize(file)
     @file = file
+    @env = {}
   end
 
   # Runs ImageMagick's 'mogrify'.
@@ -137,8 +139,20 @@ class ImageSorcery
     args.reject {|k, v| special_args.include?(k) }.map {|k, v| " -#{k} '#{v}'"}
   end
 
+  # Environment variables for the runtime configuration of ImageMagick.
+  #
+  # Set-up via #env hash.
+  #
+  def command_env
+    env.map {|k, v| "#{k}='#{v}'"}.join(' ')
+  end
+
+  def build_command(cmds)
+    "#{command_env} #{cmds}"
+  end
+
   def run(cmds)
-    output = IO.popen(cmds.to_s) {|o| o.read }
+    output = IO.popen(build_command(cmds)) {|o| o.read }
     success = $?.exitstatus == 0 ? true : false
     [output,success]
   end

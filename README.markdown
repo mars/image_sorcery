@@ -45,6 +45,14 @@ image.file # => "multi-page-*.png"
 image.file # => "multi-page.png"
 ```
 
+### Set [environment variables](http://www.imagemagick.org/script/resources.php#environment)
+Change the runtime configuration of ImageMagick.
+
+```ruby
+image = ImageSorcery.new("image.png")
+image.env = {'MAGICK_TEMPORARY_PATH' => '/dev/ramdisk-01'}
+```
+
 # Using GraphicsMagick
 Assuming you have GraphicsMagick installed on your box:
 
